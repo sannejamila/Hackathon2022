@@ -18,4 +18,5 @@ def search(area_of_interest, collections=["landsat-8-c2-l2"]):
     limit=500,
     collections=collections,
   )
+  return search_2017
 
