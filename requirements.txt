@@ -1,2 +1,1 @@
-fiona
 pystac_client
