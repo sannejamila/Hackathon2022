@@ -1,1 +1,2 @@
 fiona
+pystac_client
