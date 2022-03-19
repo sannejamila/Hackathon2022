@@ -1,5 +1,5 @@
 from load_json_data import load_json_data
-from fetch_from_planetary import search
+from fetch_from_planetary import search, search_with_date
 import requests
 import json
 import os
@@ -18,6 +18,8 @@ def get_links():
             link = link_dict["assets"]["rendered_preview"]["href"]
             links.add(link)
     return links
+
+
 
 def save_links(links, filename):
     print("Number of links", len(links))
@@ -44,6 +46,8 @@ def download_pictures(links, data_folder):
             print("error in download:", e)
 
     print("download complete")
+
+
 
 if __name__ == "__main__":
     links = get_links()

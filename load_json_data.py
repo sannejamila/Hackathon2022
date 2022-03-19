@@ -8,7 +8,6 @@ def load_json_data(filename="data/benthic.json"):
     return [i for i in data]
 
 if __name__ == "__main__":
-    coral_reef = load_json_data()[12341]
     aset = set()
     for coral_reef in load_json_data()[::1000]:
         fetched = fetch_from_planetary.search({"coordinates": coral_reef['geometry']['coordinates']}).get_all_items_as_dict()['features']

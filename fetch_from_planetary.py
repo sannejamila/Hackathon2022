@@ -20,3 +20,12 @@ def search(area_of_interest, collections=["landsat-8-c2-l2"]):
   )
   return search_2017
 
+def search_with_date(date, area_of_interest, collections=["landsat-8-c2-l2"]):
+  api = pystac_client.Client.open("https://planetarycomputer.microsoft.com/api/stac/v1/")
+  search_2017 = api.search(
+    intersects=area_of_interest,
+    datetime=f"20{date}-01-01/20{date}-12-31",
+    limit=500,
+    collections=collections,
+  )
+  return search_2017
