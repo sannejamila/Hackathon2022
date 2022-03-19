@@ -12,6 +12,7 @@ todos = {"id": "hello"}
 global_size = 0
 @app.route("/img", methods=["POST"])
 def process_image():
+    global global_size
     print(request.files["image"])
     file = request.files["image"]
     file.save("image_file.png")
@@ -24,6 +25,10 @@ def process_image():
 
 
     return send_file("edited_file.png", mimetype="image/gif")
+
+@app.route("/size", methods=["GET"])
+def get_size():
+    return jsonify(np.int(global_size))
 
 
 if __name__ == "__main__":
