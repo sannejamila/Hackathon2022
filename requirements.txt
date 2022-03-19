@@ -1,3 +1,4 @@
 pystac_client
 global_land_mask
 numpy
+opencv-python
