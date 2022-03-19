@@ -6,8 +6,7 @@ import os
 import scipy
 from scipy import signal
 
-def detect_corals_in_image(img, display=False, calc_average=False):
-    img = cv2.resize(img, (500, 500))
+def detect_corals_in_image(img, display=False, calc_average=False, return_image=False):
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     lower_blue = np.array([80,160,90])
     upper_blue = np.array([110,255,230])
@@ -39,7 +38,49 @@ def detect_corals_in_image(img, display=False, calc_average=False):
 
         cv2.imshow("Before and after", res)
         cv2.waitKey()
+    if return_image:
+        return res
     return reef_size,average
+
+def red_ring_image(img):
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    lower_blue = np.array([80,160,90])
+    upper_blue = np.array([110,255,230])
+    mask = cv2.inRange(hsv, lower_blue, upper_blue)
+    cv2.imwrite("mask_hue.jpg", mask)
+    kernel_size = 75
+    freq_x = signal.windows.gaussian(kernel_size, std=4)*3
+    freq_y = signal.windows.gaussian(kernel_size, std=4)*3
+    kernel = np.array([[x*y for x in freq_x] for y in freq_y]).astype("uint8")
+    kernel_size2 = 4
+    freq_x = signal.windows.gaussian(kernel_size2, std=2)*3
+    freq_y = signal.windows.gaussian(kernel_size2, std=2)*3
+    kernel2 = np.array([[x*y for x in freq_x] for y in freq_y]).astype("uint8")
+    mask = cv2.dilate(mask, kernel)
+    mask = cv2.dilate(mask, kernel)
+    mask = cv2.dilate(mask, kernel)
+
+    cv2.imwrite("mask_mask.jpg", mask)
+
+    mask = cv2.morphologyEx(mask, cv2.MORPH_GRADIENT, kernel2)
+
+    cv2.imwrite("mask_outline.jpg", mask)
+
+
+    reef_size = np.sum(mask)
+    res = img - cv2.bitwise_and(img, img, mask=mask)
+    red = np.zeros(img.shape)
+    red[:,:] = np.array([.21,.31,.7])*32
+    print(red)
+    print(res.mean())
+    res = res+red*cv2.bitwise_and(red, red, mask=mask)
+    cv2.imwrite("mask_finished.jpg", res)
+    print(res.mean())
+    #cv2.imshow("awdawd", red*cv2.bitwise_and(red, red, mask=mask))
+    #cv2.waitKey()
+    average = np.zeros((3))
+    print(hsv.shape)
+    return res, reef_size
 
 def get_paths(folder_name):
     return [os.path.join(folder_name, path) for path in os.listdir(folder_name)]
@@ -87,7 +128,7 @@ if __name__ == "__main__":
     random.shuffle(concatted)
     #print(evaluate_coral_extractor(coral_paths, ocean_paths, 1500))
 
-    sizes = get_reef_sizes(coral_paths)
+    sizes = get_reef_sizes(coral_paths, display=True)
 
     for reef_data in sizes:
         cv2.imshow("awda", cv2.imread(reef_data["path"]))
