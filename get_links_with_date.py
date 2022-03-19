@@ -16,13 +16,16 @@ def get_links_with_date(date):
     for i, reef in enumerate(data[::10000]):
         print(i, "of", length)
         link_data = search_with_date(date, {"coordinates": reef['geometry']['coordinates']}).get_all_items_as_dict()["features"]
-        print("Data done")
         for link_dict in link_data:
             if (link_dict['properties']['eo:cloud_cover'] > 30):
                 continue
             link = link_dict["assets"]["rendered_preview"]["href"]
             links.add(link)
-            link_place[tuple(link_dict['bbox'])].append(link)
+            temp = list()
+            for value in link_dict['bbox']:
+                temp.append(round(value))
+            temp = tuple(temp)
+            link_place[temp].append(link)
     return links, link_place
 
 
