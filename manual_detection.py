@@ -47,6 +47,7 @@ def red_ring_image(img):
     lower_blue = np.array([80,160,90])
     upper_blue = np.array([110,255,230])
     mask = cv2.inRange(hsv, lower_blue, upper_blue)
+    reef_size = np.sum(mask)
     cv2.imwrite("mask_hue.jpg", mask)
     kernel_size = 75
     freq_x = signal.windows.gaussian(kernel_size, std=4)*3
@@ -67,19 +68,14 @@ def red_ring_image(img):
     cv2.imwrite("mask_outline.jpg", mask)
 
 
-    reef_size = np.sum(mask)
     res = img - cv2.bitwise_and(img, img, mask=mask)
     red = np.zeros(img.shape)
     red[:,:] = np.array([.21,.31,.7])*32
-    print(red)
-    print(res.mean())
     res = res+red*cv2.bitwise_and(red, red, mask=mask)
     cv2.imwrite("mask_finished.jpg", res)
-    print(res.mean())
     #cv2.imshow("awdawd", red*cv2.bitwise_and(red, red, mask=mask))
     #cv2.waitKey()
     average = np.zeros((3))
-    print(hsv.shape)
     return res, reef_size
 
 def get_paths(folder_name):
