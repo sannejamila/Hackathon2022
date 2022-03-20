@@ -21,8 +21,7 @@ We used about 2000 coral and 2000 non-coral images for training.
 
 
 ## Training result
-![bilde](https://user-images.githubusercontent.com/55250882/159137521-dc111746-1f90-4eb1-a3ba-d2b4e81277b4.png)
-
+![bilde](https://user-images.githubusercontent.com/55250882/159153837-0d10618b-120a-4747-b25b-bfe586c5a3e9.png)
 
 
 ## Application
